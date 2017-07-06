@@ -37,4 +37,4 @@ RUN set -ex \
 
 WORKDIR /opt/kafka-manager/
 EXPOSE 9000
-ENTRYPOINT ["./start-kafka-manager.sh"]
+CMD ["./start-kafka-manager.sh"]
