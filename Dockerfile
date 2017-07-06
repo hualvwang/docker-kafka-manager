@@ -20,9 +20,10 @@ RUN set -ex \
 		tar \
 	\
     && curl -sL "http://dl.bintray.com/sbt/native-packages/sbt/$SBT_VERSION/sbt-$SBT_VERSION.tgz" | gunzip | tar -x -C /usr/local \
-    && echo -ne "- with sbt $SBT_VERSION\n" >> /root/.built \    && mkdir -p /tmp \
+    && echo -ne "- with sbt $SBT_VERSION\n" >> /root/.built \
+    && mkdir -p /tmp \
     && cd /tmp \
-    && curl -oL kafka-manager-${KAFKA_MANAGER_VERSION}.zip https://github.com/yahoo/kafka-manager/archive/${KAFKA_MANAGER_VERSION}.zip \
+    && curl -sL -o kafka-manager-${KAFKA_MANAGER_VERSION}.zip https://github.com/yahoo/kafka-manager/archive/${KAFKA_MANAGER_VERSION}.zip \
     && unzip  -d /tmp/kafka-manager kafka-manager-${KAFKA_MANAGER_VERSION}.zip \
     && cd /tmp/kafka-manager \
     && ./sbt clean dist \
@@ -30,6 +31,7 @@ RUN set -ex \
     && chmod +x /opt/kafka-manager/start-kafka-manager.sh \
 
     # clean up 
+
     && apk del /tmp/.build-deps \
     && rm -fr /tmp/* /root/.sbt /root/.built /root/.ivy2
 
