@@ -1,5 +1,5 @@
-FROM          openjdk:8-jre-alpine
-MAINTAINER    laoshancun@foxmail.com
+FROM openjdk:8-jdk-alpine
+MAINTAINER laoshancun@foxmail.com
 
 ENV SBT_VERSION="0.13.15" \
     SBT_HOME=/usr/local/sbt-launcher-packaging-${SBT_VERSION} \
@@ -11,7 +11,6 @@ ENV SBT_VERSION="0.13.15" \
 
 ADD repositories /etc/apk/repositories
 ADD start-kafka-manager.sh /opt/kafka-manager/
-# Install sbt
 RUN set -ex \
 	&& apk add --no-cache --virtual /tmp/.build-deps \
 		unzip \
@@ -19,9 +18,10 @@ RUN set -ex \
 		gzip \
 		tar \
 		bash \
-	\
+    # Install sbt
     && curl -sL "http://dl.bintray.com/sbt/native-packages/sbt/$SBT_VERSION/sbt-$SBT_VERSION.tgz" | gunzip | tar -x -C /usr/local \
     && echo -ne "- with sbt $SBT_VERSION\n" >> /root/.built \
+    # Install kafka-manager
     && mkdir -p /tmp \
     && cd /tmp \
     && curl -sL -o kafka-manager-${KAFKA_MANAGER_VERSION}.zip https://github.com/yahoo/kafka-manager/archive/${KAFKA_MANAGER_VERSION}.zip \
@@ -30,9 +30,7 @@ RUN set -ex \
     && ./sbt clean dist \
     && unzip  -d /opt/kafka-manager ./target/universal/kafka-manager-${KAFKA_MANAGER_VERSION}.zip \
     && chmod +x /opt/kafka-manager/start-kafka-manager.sh \
-
     # clean up 
-
     && apk del /tmp/.build-deps \
     && rm -fr /tmp/* /root/.sbt /root/.built /root/.ivy2
 
