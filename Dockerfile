@@ -25,7 +25,7 @@ RUN set -ex \
     && cd /tmp \
     && curl -sL -o kafka-manager-${KAFKA_MANAGER_VERSION}.zip https://github.com/yahoo/kafka-manager/archive/${KAFKA_MANAGER_VERSION}.zip \
     && unzip  -d /tmp/kafka-manager kafka-manager-${KAFKA_MANAGER_VERSION}.zip \
-    && cd /tmp/kafka-manager \
+    && cd /tmp/kafka-manager/kafka-manager-${KAFKA_MANAGER_VERSION} \
     && ./sbt clean dist \
     && unzip  -d /opt/kafka-manager ./target/universal/kafka-manager-${KAFKA_MANAGER_VERSION}.zip \
     && chmod +x /opt/kafka-manager/start-kafka-manager.sh \
