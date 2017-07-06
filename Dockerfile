@@ -1,24 +1,38 @@
-FROM          ubuntu:latest
-MAINTAINER    srangwal@gmail.com
+FROM          openjdk:8-jre-alpine
+MAINTAINER    laoshancun@foxmail.com
 
-# Install some basic utils
-RUN           echo "deb http://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
-RUN           sudo apt-get update
-RUN           sudo apt-get upgrade -y
-RUN           sudo apt-get install -y software-properties-common unzip
+ENV SBT_VERSION=0.13.13 \
+    SBT_HOME=/usr/local/sbt-launcher-packaging-${SBT_VERSION} \
+    PATH=${PATH}:${SBT_HOME}/bin
+    KAFKA_MANAGER_VERSION=1.3.3.7 \
+    KAFKA_MANAGER_HOME=/opt/kafka-manager \
+    ZK_HOSTS=localhost:2181 \
+    KAFKA_MANAGER_CONFIGFILE="conf/application.conf"
 
-# Install Java
-RUN           sudo apt-get install -y openjdk-7-jre openjdk-7-jdk
-RUN           sudo update-java-alternatives -s java-1.7.0-openjdk-amd64
-RUN           sudo ln -s /usr/lib/jvm/java-1.7.0-openjdk-amd64 /usr/lib/jvm/default-java
+ADD repositories /etc/apk/repositories
+ADD start-kafka-manager.sh /opt/kafka-manager/
+# Install sbt
+RUN curl -sL "http://dl.bintray.com/sbt/native-packages/sbt/$SBT_VERSION/sbt-$SBT_VERSION.tgz" | gunzip | tar -x -C /usr/local \
+    && echo -ne "- with sbt $SBT_VERSION\n" >> /root/.built \
+    && set -ex \
+	\
+	&& apk add --no-cache --virtual /tmp/.build-deps \
+		unzip \
+	\
+    && mkdir -p /tmp \
+    && cd /tmp \
+    && wget -O kafka-manager-${KAFKA_MANAGER_VERSION}.zip https://github.com/yahoo/kafka-manager/archive/${KAFKA_MANAGER_VERSION}.zip \
+    && unzip  -d /tmp/kafka-manager kafka-manager-${KAFKA_MANAGER_VERSION}.zip \
+    && cd /tmp/kafka-manager \
+    && ./sbt clean dist \
+    && unzip  -d /opt/kafka-manager ./target/universal/kafka-manager-${KAFKA_MANAGER_VERSION}.zip \
+    && chmod +x /opt/kafka-manager/start-kafka-manager.sh \
 
-# For Kafka-manager
-RUN           sudo apt-get install -y --allow-unauthenticated sbt
-RUN           cd /tmp && git clone https://github.com/yahoo/kafka-manager.git
-RUN           cd /tmp/kafka-manager && sbt clean dist && mv ./target/universal/kafka-manager-1.0-SNAPSHOT.zip /opt
-RUN           cd /opt && unzip kafka-manager-1.0-SNAPSHOT.zip && ln -s kafka-manager-1.0-SNAPSHOT kafka-manager
+    # clean up 
+    && apk del /tmp/.build-deps \
+    && rm -fr /tmp/* /root/.sbt /root/.built /root/.ivy2
 
-ENV           KAFKA_MANAGER_HOME /opt/kafka-manager
 
-ADD           ./image-files/start-kafka-manager.sh /usr/bin/
-CMD           start-kafka-manager.sh
+WORKDIR /opt/kafka-manager/
+EXPOSE 9000
+ENTRYPOINT ["./start-kafka-manager.sh"]
