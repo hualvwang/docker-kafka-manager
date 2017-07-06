@@ -22,7 +22,7 @@ RUN set -ex \
     && curl -sL "http://dl.bintray.com/sbt/native-packages/sbt/$SBT_VERSION/sbt-$SBT_VERSION.tgz" | gunzip | tar -x -C /usr/local \
     && echo -ne "- with sbt $SBT_VERSION\n" >> /root/.built \    && mkdir -p /tmp \
     && cd /tmp \
-    && wget -O kafka-manager-${KAFKA_MANAGER_VERSION}.zip https://github.com/yahoo/kafka-manager/archive/${KAFKA_MANAGER_VERSION}.zip \
+    && curl -oL kafka-manager-${KAFKA_MANAGER_VERSION}.zip https://github.com/yahoo/kafka-manager/archive/${KAFKA_MANAGER_VERSION}.zip \
     && unzip  -d /tmp/kafka-manager kafka-manager-${KAFKA_MANAGER_VERSION}.zip \
     && cd /tmp/kafka-manager \
     && ./sbt clean dist \
