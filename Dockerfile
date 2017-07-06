@@ -1,12 +1,12 @@
 FROM          openjdk:8-jre-alpine
 MAINTAINER    laoshancun@foxmail.com
 
-ENV SBT_VERSION=0.13.13 \
+ENV SBT_VERSION="0.13.13" \
     SBT_HOME=/usr/local/sbt-launcher-packaging-${SBT_VERSION} \
-    PATH=${PATH}:${SBT_HOME}/bin
-    KAFKA_MANAGER_VERSION=1.3.3.7 \
+    PATH="${PATH}:${SBT_HOME}/bin"
+    KAFKA_MANAGER_VERSION="1.3.3.7" \
     KAFKA_MANAGER_HOME=/opt/kafka-manager \
-    ZK_HOSTS=localhost:2181 \
+    ZK_HOSTS="localhost:2181" \
     KAFKA_MANAGER_CONFIGFILE="conf/application.conf"
 
 ADD repositories /etc/apk/repositories
