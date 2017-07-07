@@ -10,7 +10,7 @@ ENV SBT_VERSION="0.13.15" \
     KAFKA_MANAGER_CONFIGFILE="conf/application.conf"
 
 ADD repositories /etc/apk/repositories
-ADD start-kafka-manager.sh /opt/kafka-manager/
+ADD start-kafka-manager.sh /opt/kafka-manager-${KAFKA_MANAGER_VERSION}/
 RUN set -ex \
 	&& apk add --no-cache --virtual /tmp/.build-deps \
 		unzip \
@@ -28,13 +28,13 @@ RUN set -ex \
     && unzip  -d /tmp/kafka-manager kafka-manager-${KAFKA_MANAGER_VERSION}.zip \
     && cd /tmp/kafka-manager/kafka-manager-${KAFKA_MANAGER_VERSION} \
     && ./sbt clean dist \
-    && unzip  -d /opt/kafka-manager ./target/universal/kafka-manager-${KAFKA_MANAGER_VERSION}.zip \
-    && chmod +x /opt/kafka-manager/start-kafka-manager.sh \
+    && unzip  -d /opt ./target/universal/kafka-manager-${KAFKA_MANAGER_VERSION}.zip \
+    && chmod +x /opt/kafka-manager-${KAFKA_MANAGER_VERSION}/start-kafka-manager.sh \
     # clean up 
     && apk del /tmp/.build-deps \
     && rm -fr /tmp/* /root/.sbt /root/.built /root/.ivy2
 
 
-WORKDIR /opt/kafka-manager/
+WORKDIR /opt/kafka-manager-${KAFKA_MANAGER_VERSION}/
 EXPOSE 9000
 CMD ["./start-kafka-manager.sh"]
