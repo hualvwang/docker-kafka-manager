@@ -31,7 +31,7 @@ RUN set -ex \
     && unzip  -d /opt ./target/universal/kafka-manager-${KAFKA_MANAGER_VERSION}.zip \
     && chmod +x /opt/kafka-manager-${KAFKA_MANAGER_VERSION}/start-kafka-manager.sh \
     # clean up 
-    && apk del /tmp/.build-deps \
+    #&& apk del /tmp/.build-deps \
     && rm -fr /tmp/* /root/.sbt /root/.built /root/.ivy2
 
 

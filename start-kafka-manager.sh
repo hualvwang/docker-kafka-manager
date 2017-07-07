@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if [[ $KAFKA_MANAGER_USERNAME != ''  && $KAFKA_MANAGER_PASSWORD != '' ]]; then
     sed -i.bak '/^basicAuthentication/d' /opt/kafka-manager/conf/application.conf
