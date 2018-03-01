@@ -4,7 +4,7 @@ MAINTAINER laoshancun@foxmail.com
 ENV SBT_VERSION="0.13.15" \
     SBT_HOME=/usr/local/sbt-launcher-packaging-${SBT_VERSION} \
     PATH="${PATH}:${SBT_HOME}/bin" \
-    KAFKA_MANAGER_VERSION="1.3.3.14" \
+    KAFKA_MANAGER_VERSION="1.3.3.16" \
     KAFKA_MANAGER_HOME=/opt/kafka-manager \
     ZK_HOSTS="localhost:2181" \
     KAFKA_MANAGER_CONFIGFILE="conf/application.conf"
